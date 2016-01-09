@@ -162,7 +162,14 @@ public class DefaultHttpResponseParser extends AbstractMessageParser<HttpRespons
     }
 
     protected boolean reject(final CharArrayBuffer line, final int count) {
-        return false;
+        // empty lines not expected in the header
+        if(line.isEmpty() && count>0) {
+            return true;
+        }
+        // likely no longer in the header, could be reading a non-http stream
+        if(count>100) {
+            return true;
+        }
     }
 
 }
